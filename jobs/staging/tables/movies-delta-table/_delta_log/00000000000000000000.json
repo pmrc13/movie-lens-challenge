@@ -1,0 +1,4 @@
+{"commitInfo":{"timestamp":1655222979179,"operation":"WRITE","operationParameters":{"mode":"Overwrite","partitionBy":"[]"},"isBlindAppend":false,"operationMetrics":{"numFiles":"1","numOutputBytes":"1302","numOutputRows":"9"}}}
+{"protocol":{"minReaderVersion":1,"minWriterVersion":2}}
+{"metaData":{"id":"1b1734c4-b532-48c5-9c8d-90aa631739d1","format":{"provider":"parquet","options":{}},"schemaString":"{\"type\":\"struct\",\"fields\":[{\"name\":\"movieId\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"title\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"genres\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]}","partitionColumns":[],"configuration":{},"createdTime":1655222978712}}
+{"add":{"path":"part-00000-e177bdaa-fd17-4465-9cd8-6689dde3bf9e-c000.snappy.parquet","partitionValues":{},"size":1302,"modificationTime":1655222978000,"dataChange":true}}
