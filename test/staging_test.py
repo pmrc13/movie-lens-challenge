@@ -1,14 +1,10 @@
 import unittest
-import pyspark
 from pyspark.sql import SparkSession
-# from jobs.staging.staging import *
-# from jobs.staging import constants
 from delta import configure_spark_with_delta_pip
-
 from jobs.staging.staging import *
 
 
-class MyTestCase(unittest.TestCase):
+class StagingTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         builder = (SparkSession
@@ -19,7 +15,6 @@ class MyTestCase(unittest.TestCase):
         cls.spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
         cwd = getcwd()
-        print(cwd)
 
         cls.data_directory = f"{cwd}/test/resources"
 
@@ -39,9 +34,6 @@ class MyTestCase(unittest.TestCase):
 
         actual_df = load_ratings_data(self.spark, self.data_directory, f"{self.data_directory}/ratings-delta-table")
 
-        expected_df.show()
-        actual_df.show()
-
         self.assertEqual(expected_df.collect(), actual_df.collect())
 
     def test_load_ratings_data_first_csv_only(self):
@@ -56,9 +48,6 @@ class MyTestCase(unittest.TestCase):
         # data_directory = "/Users/pedro.cheira/Documents/learning/asos-movie-lens/tests/resources/"
 
         actual_df = load_ratings_data(self.spark, self.data_directory, f"{self.data_directory}/ratings-delta-table")
-
-        expected_df.show()
-        actual_df.show()
 
         self.assertNotEqual(expected_df.collect(), actual_df.collect())
 
@@ -76,11 +65,7 @@ class MyTestCase(unittest.TestCase):
 
         _ = load_ratings_data(self.spark, self.data_directory, save_path)
 
-        expected_df.show()
-
         actual_df = self.spark.read.format("delta").load(save_path)
-
-        actual_df.show()
 
         self.assertEqual(sorted(expected_df.collect()), sorted(actual_df.collect()))
 
@@ -96,9 +81,6 @@ class MyTestCase(unittest.TestCase):
             schema=constants.MOVIES_SCHEMA)
 
         actual_df = load_movies_data(self.spark, self.data_directory, f"{self.data_directory}/movies-delta-table")
-
-        expected_df.show()
-        actual_df.show()
 
         self.assertEqual(expected_df.collect(), actual_df.collect())
 
@@ -117,11 +99,7 @@ class MyTestCase(unittest.TestCase):
 
         _ = load_movies_data(self.spark, self.data_directory, save_path)
 
-        expected_df.show()
-
         actual_df = self.spark.read.format("delta").load(save_path)
-
-        actual_df.show()
 
         self.assertEqual(sorted(expected_df.collect()), sorted(actual_df.collect()))
 
@@ -137,9 +115,6 @@ class MyTestCase(unittest.TestCase):
             schema=constants.TAGS_SCHEMA)
 
         actual_df = load_tags_data(self.spark, self.data_directory, f"{self.data_directory}/tags-delta-table")
-
-        expected_df.show()
-        actual_df.show()
 
         self.assertEqual(expected_df.collect(), actual_df.collect())
 
@@ -158,11 +133,7 @@ class MyTestCase(unittest.TestCase):
 
         _ = load_tags_data(self.spark, self.data_directory, save_path)
 
-        expected_df.show()
-
         actual_df = self.spark.read.format("delta").load(save_path)
-
-        actual_df.show()
 
         self.assertEqual(sorted(expected_df.collect()), sorted(actual_df.collect()))
 

@@ -1,12 +1,16 @@
-import pyspark
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import *
-from delta import configure_spark_with_delta_pip
-from pyspark.sql import functions as F
+""" Transformation layer.
+    :return: None
+    """
 from os import getcwd
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import explode, col, split, mean, count
+from delta import configure_spark_with_delta_pip
 
 
 def main():
+    """ Runs the transformation layer's job.
+    :return: None
+    """
     builder = SparkSession \
         .builder \
         .master("local[1]") \
@@ -23,13 +27,19 @@ def main():
                      f"{cwd}/jobs/transformation/tables/movies-split-delta-table")
 
     k = 10
-    find_top_k_films_by_avg_rating(spark,
-                                   f"{data_directory}/ratings-delta-table",
-                                   f"{cwd}/jobs/transformation/top_{str(k)}_movies/top_{str(k)}_movies.csv",
-                                   k)
+    find_top_k_films_by_avg_rating(
+        spark,
+        f"{data_directory}/ratings-delta-table",
+        f"{cwd}/jobs/transformation/top_{str(k)}_movies/top_{str(k)}_movies.csv",
+        k
+    )
 
 
 def transform_movies(spark, data_directory, save_path):
+    """ Performs the first task of the transformation layer.
+    Explodes the pipe-separated "genres" column to separate rows.
+    :return: Dataframe
+    """
     movies_df = spark.read.format("delta").load(data_directory)
     movies_genres_split_df = movies_df.withColumn("genres", explode(split(col("genres"), '\\|')))
 
@@ -43,6 +53,11 @@ def transform_movies(spark, data_directory, save_path):
 
 
 def find_top_k_films_by_avg_rating(spark, data_directory, save_path, k=10):
+    """ Performs the last task of the transformation layer.
+    Finds the top k (default is 10) films having a higher
+    average rating score.
+    :return: Dataframe
+    """
     ratings_df = spark \
         .read \
         .format("delta") \
@@ -50,7 +65,7 @@ def find_top_k_films_by_avg_rating(spark, data_directory, save_path, k=10):
 
     movie_avg_ratings_df = ratings_df \
         .groupBy("movieId") \
-        .agg(F.mean('rating').alias("avg_rating"), F.count('rating').alias("count_rating")) \
+        .agg(mean('rating').alias("avg_rating"), count('rating').alias("count_rating")) \
         .filter(col("count_rating") >= 5)
 
     # the average rating score ties are handled by adding additional grouping conditions

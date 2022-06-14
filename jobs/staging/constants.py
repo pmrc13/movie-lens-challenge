@@ -1,4 +1,7 @@
-from pyspark.sql.types import *
+"""
+Constants
+"""
+from pyspark.sql.types import StructType, IntegerType, StringType, DoubleType, LongType
 
 MOVIES = "movies"
 RATINGS = "ratings"

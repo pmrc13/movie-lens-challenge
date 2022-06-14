@@ -1,14 +1,13 @@
 import unittest
-import pyspark
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_unixtime, col
 from delta import configure_spark_with_delta_pip
 
 from jobs.staging import constants
-from jobs.staging.staging import load_ratings_data
 from jobs.transformation.transformation import *
 
 
-class MyTestCase(unittest.TestCase):
+class TransformationTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         builder = (SparkSession
@@ -19,7 +18,6 @@ class MyTestCase(unittest.TestCase):
         cls.spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
         cwd = getcwd()
-        print(cwd)
 
         cls.data_directory = f"{cwd}/test/resources"
 
@@ -53,9 +51,6 @@ class MyTestCase(unittest.TestCase):
                                      f"{self.data_directory}/movies-delta-table",
                                      f"{self.data_directory}/movies-split-delta-table")
 
-        expected_df.show()
-        actual_df.show()
-
         self.assertEqual(expected_df.collect(), actual_df.collect())
 
     def test_find_top_k_films_by_avg_rating(self):
@@ -74,9 +69,6 @@ class MyTestCase(unittest.TestCase):
                                                    f"{self.data_directory}/ratings-top-k-movies-delta-table",
                                                    f"{self.data_directory}/top_{str(k)}_movies/top_{str(k)}_movies.csv",
                                                    k)
-
-        expected_df.show()
-        actual_df.show()
 
         self.assertEqual(expected_df.collect(), actual_df.collect())
 
