@@ -38,6 +38,12 @@ def main():
 def transform_movies(spark, data_directory, save_path):
     """ Performs the first task of the transformation layer.
     Explodes the pipe-separated "genres" column to separate rows.
+
+    Keyword arguments:
+    spark -- the spark session
+    data_directory -- input delta lake table location
+    save_path -- the location of the resulting delta lake table
+
     :return: Dataframe
     """
     movies_df = spark.read.format("delta").load(data_directory)
@@ -54,8 +60,15 @@ def transform_movies(spark, data_directory, save_path):
 
 def find_top_k_films_by_avg_rating(spark, data_directory, save_path, k=10):
     """ Performs the last task of the transformation layer.
-    Finds the top k (default is 10) films having a higher
-    average rating score.
+    Finds the top k (default is 10) films having the highest
+    average rating scores.
+
+    Keyword arguments:
+    spark -- the spark session
+    data_directory -- input delta lake table location
+    save_path -- the location of the resulting CSV file
+    k -- the desired number of films to be retrieved (default: 10)
+
     :return: Dataframe
     """
     ratings_df = spark \
@@ -76,6 +89,10 @@ def find_top_k_films_by_avg_rating(spark, data_directory, save_path, k=10):
         .limit(k) \
         .select(col("movieId"), col("avg_rating"))
 
+    # since the data is partitioned, performing the coalesce(1) operation on the dataframe
+    # ensures that all data will reside in a single partition instead.
+    # converting the pyspark dataframe to a pandas dataframe allows for an easier write
+    # of the data to a CSV file with the desired name and location
     ordered_movie_avg_ratings_df \
         .coalesce(1) \
         .toPandas() \

@@ -1,13 +1,19 @@
+"""
+Unit tests for the transformation layer of the pipeline.
+"""
 import unittest
+from os import getcwd
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_unixtime, col
 from delta import configure_spark_with_delta_pip
-
 from jobs.staging import constants
-from jobs.transformation.transformation import *
+from jobs.transformation.transformation import transform_movies, find_top_k_films_by_avg_rating
 
 
 class TransformationTestCase(unittest.TestCase):
+    """ Test suite for the transformation layer.
+    """
+
     @classmethod
     def setUpClass(cls):
         builder = (SparkSession
@@ -27,7 +33,9 @@ class TransformationTestCase(unittest.TestCase):
     def tearDownClass(cls):
         cls.spark.stop()
 
-    def test_load_movies_data(self):
+    def test_transform_movies_data(self):
+        """ Test the movies dataset transformation function: transform_movies.
+        """
         expected_df = self.spark.createDataFrame(
             data=[
                 [1, "Toy Story (1995)", "Adventure"],
@@ -54,6 +62,9 @@ class TransformationTestCase(unittest.TestCase):
         self.assertEqual(expected_df.collect(), actual_df.collect())
 
     def test_find_top_k_films_by_avg_rating(self):
+        """ Test the transformation function over the ratings dataset
+        that finds the top k films by average rating: find_top_k_films_by_avg_rating.
+        """
         expected_df = self.spark.createDataFrame(
             data=[
                 [1, 4.75],
@@ -65,14 +76,19 @@ class TransformationTestCase(unittest.TestCase):
             schema=constants.TOP_K_MOVIES_SCHEMA)
 
         k = 5
-        actual_df = find_top_k_films_by_avg_rating(self.spark,
-                                                   f"{self.data_directory}/ratings-top-k-movies-delta-table",
-                                                   f"{self.data_directory}/top_{str(k)}_movies/top_{str(k)}_movies.csv",
-                                                   k)
+        actual_df = find_top_k_films_by_avg_rating(
+            self.spark,
+            f"{self.data_directory}/ratings-top-k-movies-delta-table",
+            f"{self.data_directory}/top_{str(k)}_movies/top_{str(k)}_movies.csv",
+            k)
 
         self.assertEqual(expected_df.collect(), actual_df.collect())
 
     def load_test_ratings_top_k_file(self):
+        """ Helper function that loads a ratings dataset fake CSV and creates
+        a delta lake table. This data will be used to test the computation of
+        the top k films by average score.
+        """
         ratings_df = self.spark.read \
             .option("header", True) \
             .schema(constants.RATINGS_SCHEMA) \

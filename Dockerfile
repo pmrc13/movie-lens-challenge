@@ -14,6 +14,7 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
+COPY main.py .
 COPY jobs/ jobs/
 COPY datasets/ datasets/
 COPY test/ test/

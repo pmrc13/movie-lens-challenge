@@ -1,6 +1,6 @@
 # asos-movie-lens
 
-This repository contains a proposed solution to Asos' Big Data Engineer Code Test.
+This repository contains a proposed solution to ASOS' Big Data Engineer Code Test.
 It was developed using the PySpark framework, the Python's testing library unittest, and Docker.
 
 # Building and running the solution with venv

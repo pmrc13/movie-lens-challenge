@@ -32,6 +32,12 @@ def main():
 def load_ratings_data(spark, data_directory, save_path):
     """ Load data from the CSV files related to movie ratings and
     save it in partitioned a delta lake table.
+
+    Keyword arguments:
+    spark -- the spark session
+    data_directory -- CSV input file location
+    save_path -- resulting delta lake table location
+
     :return: Dataframe
     """
     ratings_df = process_data_files(spark,
@@ -54,6 +60,12 @@ def load_ratings_data(spark, data_directory, save_path):
 
 def load_movies_data(spark, data_directory, save_path):
     """ Load data from the CSV files related to movies and save it in a delta lake table.
+
+    Keyword arguments:
+    spark -- the spark session
+    data_directory -- CSV input file location
+    save_path -- resulting delta lake table location
+
     :return: Dataframe
     """
     movies_df = process_data_files(spark, data_directory, constants.MOVIES, constants.MOVIES_SCHEMA)
@@ -68,6 +80,12 @@ def load_movies_data(spark, data_directory, save_path):
 
 def load_tags_data(spark, data_directory, save_path):
     """ Load data from the CSV files related to movie tags and save it in a delta lake table.
+
+    Keyword arguments:
+    spark -- the spark session
+    data_directory -- CSV input file location
+    save_path -- resulting delta lake table location
+
     :return: Dataframe
     """
     tags_df = process_data_files(spark, data_directory, constants.TAGS, constants.TAGS_SCHEMA)
@@ -82,6 +100,11 @@ def load_tags_data(spark, data_directory, save_path):
 
 def get_dataset_files(data_directory, dataset_name):
     """ Helper function that obtains all the CSV files for a certain dataset
+
+    Keyword arguments:
+    data_directory -- CSV input files location
+    dataset_name -- the desired dataset: ratings, movies, or tags
+
     :return: List[String] sorted list of files
     """
     dataset_files = [f"{data_directory}/{f}" for f in listdir(data_directory) if
@@ -91,6 +114,13 @@ def get_dataset_files(data_directory, dataset_name):
 
 def process_data_files(spark, data_directory, dataset, schema):
     """ Helper function that reads all CSV files, for the respective dataset.
+
+    Keyword arguments:
+    spark -- the spark session
+    data_directory -- CSV input file location
+    dataset -- the desired dataset: ratings, movies, or tags
+    schema -- the desired dataset schema
+
     :return: Dataframe
     """
     files = get_dataset_files(data_directory, dataset)
