@@ -3,7 +3,13 @@
 This repository contains a proposed solution to the Big Data Engineer Code Test.
 It was developed using the PySpark framework, the Python's testing library unittest, and Docker.
 
-# Building and running the solution with venv
+The required tasks can be found on this [document](./BDE_Code_Test.pdf).
+
+## Dataset
+
+The used dataset is the popular [movie-lens dataset](https://grouplens.org/datasets/movielens/latest/).
+
+## Building and running the solution with venv
 
 Install venv
 
@@ -55,7 +61,7 @@ Deactivate the virtual environment
 deactivate
 ````
 
-# Building and running the solution with Docker
+## Building and running the solution with Docker
 
 Build the Docker image
 
