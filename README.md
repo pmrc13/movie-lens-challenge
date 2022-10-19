@@ -1,6 +1,6 @@
-# asos-movie-lens
+# movie-lens-challenge
 
-This repository contains a proposed solution to ASOS' Big Data Engineer Code Test.
+This repository contains a proposed solution to the Big Data Engineer Code Test.
 It was developed using the PySpark framework, the Python's testing library unittest, and Docker.
 
 # Building and running the solution with venv
@@ -60,25 +60,25 @@ deactivate
 Build the Docker image
 
 ````bash
-docker build -t asos-movie-lens .
+docker build -t movie-lens-challenge .
 ````
 
 Run the jobs
 
 ````bash
-docker run asos-movie-lens driver local:///opt/application/jobs/main.py
+docker run movie-lens-challenge driver local:///opt/application/jobs/main.py
 ````
 
 Run unit tests
 
 ````bash
-docker run asos-movie-lens python -m unittest test.staging_test.StagingTestCase
-docker run asos-movie-lens python -m unittest test.transformation_test.TransformationTestCase
+docker run movie-lens-challenge python -m unittest test.staging_test.StagingTestCase
+docker run movie-lens-challenge python -m unittest test.transformation_test.TransformationTestCase
 ````
 
 Run static analysis
 
 ````bash
-docker run asos-movie-lens pylint jobs
-docker run asos-movie-lens pylint test
+docker run movie-lens-challenge pylint jobs
+docker run movie-lens-challenge pylint test
 ````
